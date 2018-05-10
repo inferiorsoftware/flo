@@ -16,7 +16,10 @@ struct CompileError
 		UnterminatedToken
 	};
 
+	/** The type of error this represents. */
 	const CompileError::Type type;
+
+	/** The token where this error occours. */
 	const Token token;
 };
 
@@ -36,6 +39,9 @@ public:
 	void onCompileError(CompileError err);
 };
 
+/**
+ * Generates a useful error message about a CompileError.
+ */
 class CompileErrorMessageGenerator
 {
 public:

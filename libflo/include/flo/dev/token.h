@@ -11,7 +11,7 @@ struct Token
 {
 	enum class Type
 	{
-		EndStmt,		/**< End of statement; a semicolon or a line-break. */
+		EndStmt,		/**< End of statement: semicolon or line-break. */
 
 		Plus,			/**< + */
 		Minus,			/**< - */
@@ -27,12 +27,13 @@ struct Token
 	/** Type of token this represents. */
 	const flo::Token::Type type;
 
-	/** The token as it appeared in the source code. */
+	/** The "raw" value of the token. */
 	const std::string lexeme;
 
 	/** The character index where the token appears in source code. */
 	const int index;
 
+	/** Get the name of the token, suitable for debugging. */
 	std::string getName();
 };
 

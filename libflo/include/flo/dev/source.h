@@ -5,9 +5,15 @@
 namespace flo
 {
 
+/**
+ * Some source code with an identifier.
+ */
 struct Source
 {
+	/** A unique id for the source, e.g, a file name. */
 	const std::string id;
+
+	/** The body of the source code. */
 	const std::string code;
 
 	Source(const std::string id,
