@@ -9,10 +9,11 @@ std::string flo::Token::getName()
 	case Type::Plus:		return "Plus";
 	case Type::Minus:		return "Minus";
 	case Type::Star:		return "Start";
-	case Type::SlashFwd:	return "SlashFwd";
+	case Type::Stroke:		return "Stroke";
 	case Type::Pipe:		return "Pipe";
 
 	case Type::String:		return "String";
+	case Type::Number:		return "Number";
 
 	case Type::Error:		return "ERR";
 	}

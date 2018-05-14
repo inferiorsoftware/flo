@@ -13,8 +13,8 @@ set(SOURCE_CORE
 set(INCLUDE_DEV
     include/flo/dev/source.h
     include/flo/dev/token.h
-
     include/flo/dev/tokeniser.h
+    include/flo/dev/ast.h
 
     include/flo/dev/compile_error.h
     )
@@ -22,8 +22,8 @@ set(INCLUDE_DEV
 set(SOURCE_DEV
     source/source.cpp
     source/token.cpp
-
     source/tokeniser.cpp
+    source/ast.cpp
 
     source/compile_error.cpp
     )

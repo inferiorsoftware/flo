@@ -1,0 +1,20 @@
+# Grammar #
+
+<stmt>		=   <exprStmt>
+			  	/ <outStmt>
+			  	;
+<stmtEnd>	=	';' / '\n' ;
+
+<exprStmt>	=   ['('] <expr> [')'] <stmtEnd> ;
+<outStmt>	=   'out' <expr> <stmtEnd> ;
+
+<expr>		=	<add>
+<add>		=	<mul> (('+' / '-') <mul>)* ;
+<mul>		=	<unary> (('*'' / '/') <unary>)* ;
+<unary>		=	'-' (unary / primary) ;
+<primary>	=	<NUM> / <STR> / '('<expr>')' ;
+
+<num>		=	<DIGIT>+ ['.' <DIGIT>+] ;
+<str>		=	'"' <any char>+ '"' ;
+
+-----------------------------------------------------------------

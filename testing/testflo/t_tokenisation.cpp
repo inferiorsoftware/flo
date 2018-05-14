@@ -5,16 +5,6 @@
 
 using namespace flo;
 
-class TokenisationTest :	public ::testing::Test,
-							public flo::CompileErrorListener
-{
-public:
-	std::vector<CompileError> errors;
-	void onCompileError(flo::CompileError err)
-	{
-		errors.push_back(err);
-	}
-};
 
 TEST(TokenisationTest, EndStmt)
 {
@@ -45,7 +35,7 @@ TEST(TokenisationTest, Star)
 
 TEST(TokenisationTest, SlashFwd)
 {
-	EXPECT_EQ(flo::tokenise("/")[0].type, Token::Type::SlashFwd);
+	EXPECT_EQ(flo::tokenise("/")[0].type, Token::Type::Stroke);
 }
 
 TEST(TokenisationTest, Pipe)
@@ -99,4 +89,36 @@ TEST(TokenisationTest, String)
 			<< "Unterminated \" emmits CompileError::Type::UnterminatedToken.";
 
 }
+
+TEST(TokenisationTest, DigitTest)
+{
+	std::vector<flo::Token> tkns = flo::tokenise("5");
+	ASSERT_EQ(tkns.size(), 1)
+			<< "Single digit produces single token;";
+
+	EXPECT_EQ(tkns[0].type, Token::Type::Number)
+			<< "Single digit produces number; got " +tkns[0].getName();
+}
+
+TEST(TokenisationTest, DigitSequenceTest)
+{
+	std::vector<flo::Token> tkns = flo::tokenise("55555");;
+	ASSERT_EQ(tkns.size(), 1)
+			<< "Digit sequence produces single token;";
+
+	EXPECT_EQ(tkns[0].type, Token::Type::Number)
+			<< "Digit sequence produces number; got " +tkns[0].getName();
+}
+
+TEST(TokenisationTest, DecimalTest)
+{
+	std::vector<flo::Token> tkns = flo::tokenise("5.5");
+
+	ASSERT_EQ(tkns.size(), 1)
+			<< "Decimal produces single token;";
+
+	EXPECT_EQ(tkns[0].type, Token::Type::Number)
+			<< "Decimal produces number; got " +tkns[0].getName();
+}
+
 

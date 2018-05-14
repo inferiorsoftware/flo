@@ -44,7 +44,7 @@ public:
 
 int main()
 {
-	flo::Source src = flo::Source("tmp", "+\"egg\n + + + + ");
+	flo::Source src = flo::Source("tmp", "5 + 5");
 
 	ErrorPrinter erp;
 

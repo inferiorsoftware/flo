@@ -16,12 +16,13 @@ struct Token
 		Plus,			/**< + */
 		Minus,			/**< - */
 		Star,			/**< * */
-		SlashFwd,		/**< / */
+		Stroke,			/**< / */
 		Pipe,			/**< | */
 
 		String,			/**< "..." */
+		Number,			/**< x[.x] */
 
-		Error			/**< Not a valid token.*/
+		Error			/**< Not a valid token. */
 	};
 
 	/** Type of token this represents. */

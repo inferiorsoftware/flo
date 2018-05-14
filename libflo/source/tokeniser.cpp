@@ -1,5 +1,7 @@
 #include "flo/dev/tokeniser.h"
+
 #include <sstream>
+#include <ctype.h>
 
 class Scanner
 {
@@ -67,6 +69,7 @@ public:
 	char peekPeek()
 	{
 		if(isLast()) return '\0';
+
 		return code.at(i + 1);
 	}
 
@@ -196,7 +199,7 @@ std::vector<flo::Token> flo::tokenise(const std::string code, CompileErrorListen
 			}
 			else
 			{
-				tkns.append(Token::Type::SlashFwd, "/");
+				tkns.append(Token::Type::Stroke, "/");
 			}
 			break;
 
@@ -229,6 +232,44 @@ std::vector<flo::Token> flo::tokenise(const std::string code, CompileErrorListen
 			break;
 
 		default:
+
+			// Number literal
+			if(isdigit(ch))
+			{
+				const int start = s.index();
+				std::stringstream ss;
+
+				bool decimal;
+
+				ss << ch;
+
+				while(!s.isEnd())
+				{
+					const char next = s.peek();
+
+					if(isdigit(next))
+					{
+						ss << s.advance();
+					}
+					else if(next == '.')
+					{
+						if(!decimal)
+						{
+							decimal = true;
+							ss << s.advance();
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+
+				tkns.append(Token::Type::Number, ss.str(), start);
+
+				break;
+			}
+
 
 			// Invalid token
 			TOKEN_ERROR(CompileError::Type::InvalidToken, std::string(1, ch));
