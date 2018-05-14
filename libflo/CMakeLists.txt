@@ -15,6 +15,8 @@ set(INCLUDE_DEV
     include/flo/dev/token.h
     include/flo/dev/tokeniser.h
     include/flo/dev/ast.h
+    include/flo/dev/parser.h
+    include/flo/dev/ast_printer.h
 
     include/flo/dev/compile_error.h
     )
@@ -24,6 +26,8 @@ set(SOURCE_DEV
     source/token.cpp
     source/tokeniser.cpp
     source/ast.cpp
+    source/parser.cpp
+    source/ast_printer.cpp
 
     source/compile_error.cpp
     )

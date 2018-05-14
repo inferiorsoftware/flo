@@ -66,6 +66,10 @@ nodes = [
     ClassDef(expr, "LiteralExpr",
              [Field("Token", "token", "Token defining the literal.")],
              "A literal value defined in source code."
+             ),
+    ClassDef(expr, "ErrorExpr",
+             [Field("Token", "token", "The unparsable token.")],
+             "A parse error."
              )
 ]
 
@@ -156,20 +160,17 @@ if __name__ == "__main__":
             # Methods
             if not cls.abstract:
                 src.ln("AstNode* getParent() final;")
+                src.ln("void accept(AstVisitor& visitor) final;")
                 src.ln("static " + cls.ptrName + " create(" + cls.constructor + ");")
 
-            # AstNode
-            if not cls.superclass:
-                src.ln("virtual ~" + cls.name + "();")
+            # Base AstNode
+            elif not cls.superclass:
+                src.ln("virtual ~" + cls.name + "() {}")
                 src.ln("virtual AstNode* getParent() = 0;")
+                src.ln("virtual void accept(AstVisitor& visitor) = 0;")
                 src.access_mod("protected")
                 src.ln("AstNode* parent;\n")
 
-            # Parent
-            #if not cls.abstract:
-                #src.br()
-                #src.access_mod("private")
-                #src.ln("AstNode* parent;\n")
 
             # Constructor
             if cls.constructor:
@@ -186,6 +187,8 @@ if __name__ == "__main__":
         src.ln("namespace flo")
         src.ln("{")
 
+        src.ln("class AstVisitor;")
+
         # Base classes
         generate_class(base)
         generate_class(stmt)
@@ -194,6 +197,16 @@ if __name__ == "__main__":
         # Node classes
         for cls in nodes:
             generate_class(cls)
+
+
+        # Visitor
+        src.ln("class AstVisitor");
+        src.block_begin()
+        src.access_mod("public")
+        for cls in nodes:
+            src.ln("virtual void visit(" + cls.name + "& " + cls.name[-4:].lower() + ");")
+
+        src.block_end(";")
 
         src.br()
         src.ln("}")   # namespace
@@ -219,6 +232,9 @@ if __name__ == "__main__":
             # Parent getter
             src.ln("AstNode* " + cls.name + "::getParent() { return parent; }\n")
 
+            # Visitor
+            src.ln("void " + cls.name + "::accept(AstVisitor& visitor) { visitor.visit(*this); }")
+
             # factory
             src.ln(cls.ptrName + " " + cls.name + "::create(" + cls.constructor + ")")
             src.block_begin()
@@ -242,9 +258,22 @@ if __name__ == "__main__":
         src.ln("using namespace flo;")
         src.br()
 
+        # Classes
         for cls in nodes:
-
             generate_class(cls)
+
+        # Visitor
+        for cls in nodes:
+            arg = cls.name[-4:].lower()
+            src.ln("void flo::AstVisitor::visit(" + cls.name + "& " + arg + ")")
+            src.block_begin()
+
+            for field in cls.fields:
+                if field.typename[-3:] == "Ptr":
+                    src.ln(arg + "." + field.name + "->accept(*this);")
+
+            src.block_end()
+
 
         return src.str
 

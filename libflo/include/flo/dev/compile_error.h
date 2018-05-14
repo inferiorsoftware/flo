@@ -13,7 +13,8 @@ struct CompileError
 	enum class Type
 	{
 		InvalidToken,
-		UnterminatedToken
+		UnterminatedToken,
+		ParseFailure
 	};
 
 	/** The type of error this represents. */

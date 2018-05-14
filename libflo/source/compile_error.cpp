@@ -26,6 +26,10 @@ std::string flo::CompileErrorMessageGenerator::generateMessage(flo::CompileError
 		}
 
 		break;
+
+	case CompileError::Type::ParseFailure:
+		ss << "Unable to parse: " << err.token.lexeme;
+		break;
 	}
 
 

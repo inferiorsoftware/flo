@@ -6,6 +6,7 @@
 
 namespace flo
 {
+class AstVisitor;
 
 /** Base for AST nodes. */
 struct AstNode
@@ -15,9 +16,11 @@ struct AstNode
 	friend struct BinaryExpr;
 	friend struct UnaryExpr;
 	friend struct LiteralExpr;
+	friend struct ErrorExpr;
 	
-	virtual ~AstNode();
+	virtual ~AstNode() {}
 	virtual AstNode* getParent() = 0;
+	virtual void accept(AstVisitor& visitor) = 0;
 protected:
 	AstNode* parent;
 
@@ -48,6 +51,7 @@ struct ExprStmt : public Stmt
 	const ExprPtr expression;
 	
 	AstNode* getParent() final;
+	void accept(AstVisitor& visitor) final;
 	static StmtPtr create(ExprPtr expression);
 	ExprStmt(ExprPtr expression);
 };
@@ -59,6 +63,7 @@ struct OutStmt : public Stmt
 	const ExprPtr expression;
 	
 	AstNode* getParent() final;
+	void accept(AstVisitor& visitor) final;
 	static StmtPtr create(ExprPtr expression);
 	OutStmt(ExprPtr expression);
 };
@@ -72,6 +77,7 @@ struct BinaryExpr : public Expr
 	const ExprPtr right;
 	
 	AstNode* getParent() final;
+	void accept(AstVisitor& visitor) final;
 	static ExprPtr create(ExprPtr left, Token op, ExprPtr right);
 	BinaryExpr(ExprPtr left, Token op, ExprPtr right);
 };
@@ -84,6 +90,7 @@ struct UnaryExpr : public Expr
 	const ExprPtr right;
 	
 	AstNode* getParent() final;
+	void accept(AstVisitor& visitor) final;
 	static ExprPtr create(Token op, ExprPtr right);
 	UnaryExpr(Token op, ExprPtr right);
 };
@@ -95,9 +102,32 @@ struct LiteralExpr : public Expr
 	const Token token;
 	
 	AstNode* getParent() final;
+	void accept(AstVisitor& visitor) final;
 	static ExprPtr create(Token token);
 	LiteralExpr(Token token);
 };
 
+
+/** A parse error. */
+struct ErrorExpr : public Expr
+{
+	const Token token;
+	
+	AstNode* getParent() final;
+	void accept(AstVisitor& visitor) final;
+	static ExprPtr create(Token token);
+	ErrorExpr(Token token);
+};
+
+class AstVisitor
+{
+public:
+	virtual void visit(ExprStmt& stmt);
+	virtual void visit(OutStmt& stmt);
+	virtual void visit(BinaryExpr& expr);
+	virtual void visit(UnaryExpr& expr);
+	virtual void visit(LiteralExpr& expr);
+	virtual void visit(ErrorExpr& expr);
+};
 
 }

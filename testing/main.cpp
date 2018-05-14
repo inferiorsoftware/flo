@@ -1,11 +1,12 @@
 #include <flo/dev/source.h>
 #include <flo/dev/token.h>
 #include <flo/dev/tokeniser.h>
-
+#include <flo/dev/ast.h>
+#include <flo/dev/parser.h>
+#include <flo/dev/ast_printer.h>
 #include <iostream>
 #include <iomanip>
 
-using namespace std;
 
 class ErrorPrinter : public flo::CompileErrorListener
 {
@@ -42,19 +43,31 @@ public:
 	}
 };
 
+
 int main()
 {
-	flo::Source src = flo::Source("tmp", "5 + 5");
+	flo::Source src = flo::Source("tmp", "out 1 + 1 * 10");
 
 	ErrorPrinter erp;
 
-	for(flo::Token tkn :flo::tokenise(src.code, &erp))
+
+	std::vector<flo::Token> tokens = flo::tokenise(src.code, &erp);
+	for(flo::Token tkn : tokens)
 	{
 		std::cout << std::setw(7) << tkn.getName() << " | " << tkn.lexeme << std::endl;
 	}
 
 	erp.print(src);
+	std::cout << std::endl;
 
+	std::vector<flo::StmtPtr> tree = flo::parse(tokens, &erp);
+
+	flo::dbg::AstPrinter astpr;
+
+	for(flo::StmtPtr stmt : tree)
+	{
+		std::cout << astpr.print(*stmt) << std::endl;
+	}
 
     return 0;
 }
