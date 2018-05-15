@@ -34,11 +34,12 @@ set(INCLUDE_DEV
     include/flo/dev/keyword.h
     include/flo/dev/tokeniser.h
     include/flo/dev/ast.h
-    include/flo/dev/ast_printer.h
+    include/flo/dev/parser.h
+    include/flo/dev/bytecode_generator.h
 
     include/flo/dev/compile_error.h
 
-    include/flo/dev/parser.h
+    include/flo/dev/ast_printer.h
     include/flo/dev/chunk_factory.h
     )
 
@@ -49,6 +50,7 @@ set(SOURCE_DEV
     source/tokeniser.cpp
     source/ast.cpp
     source/parser.cpp
+    source/bytecode_generator.cpp
 
     source/compile_error.cpp
 

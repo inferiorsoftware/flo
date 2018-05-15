@@ -11,6 +11,7 @@
 #include <flo/dev/chunk_factory.h>
 #include <flo/bytecode/opcode.h>
 #include <flo/runtime/runtime.h>
+#include <flo/dev/bytecode_generator.h>
 
 #include <iostream>
 #include <iomanip>
@@ -77,14 +78,8 @@ int main()
 		std::cout << astpr.print(*stmt) << std::endl;
 	}
 
+	flo::Chunk* c = flo::generate(tree);
 
-
-	flo::Chunk* c = flo::util::ChunkFactory()
-					.constant(flo::Number::create(10))
-					.constant(flo::Number::create(1.5))
-					.op(flo::Opcode::Add)
-					.op(flo::Opcode::Out)
-					.end();
 
 	flo::Runtime rt;
 	rt.run(*c);
