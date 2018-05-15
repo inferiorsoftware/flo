@@ -1,4 +1,5 @@
 #include "flo/dev/parser.h"
+#include "flo/dev/token.h"
 
 #include <iostream> //TMP!
 
@@ -9,7 +10,7 @@ namespace flo
 class TokenScanner
 {
 	std::vector<Token> tokens;
-	int i = 0;
+	unsigned int i = 0;
 
 public:
 	TokenScanner(const std::vector<Token> tokens)
@@ -26,7 +27,7 @@ public:
 		return false;
 	}
 
-	bool peek(Token::Type type) { return tokens[i].type == type; }
+	bool peek(Token::Type type) { return !isEnd() && tokens[i].type == type; }
 	bool isEnd() { return i >= tokens.size(); }
 	Token previous() { return tokens[i-1]; }
 	void advance() { ++i; }

@@ -4,6 +4,14 @@
 #include <flo/dev/ast.h>
 #include <flo/dev/parser.h>
 #include <flo/dev/ast_printer.h>
+
+#include <flo/lang/number.h>
+
+#include <flo/bytecode/chunk.h>
+#include <flo/dev/chunk_factory.h>
+#include <flo/bytecode/opcode.h>
+#include <flo/runtime/runtime.h>
+
 #include <iostream>
 #include <iomanip>
 
@@ -68,6 +76,20 @@ int main()
 	{
 		std::cout << astpr.print(*stmt) << std::endl;
 	}
+
+
+
+	flo::Chunk* c = flo::util::ChunkFactory()
+					.constant(flo::Number::create(10))
+					.constant(flo::Number::create(1.5))
+					.op(flo::Opcode::Add)
+					.op(flo::Opcode::Out)
+					.end();
+
+	flo::Runtime rt;
+	rt.run(*c);
+
+	delete c;
 
     return 0;
 }
