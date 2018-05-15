@@ -1,7 +1,9 @@
 #include "flo/dev/tokeniser.h"
-
+#include "flo/dev/keyword.h"
 #include <sstream>
 #include <ctype.h>
+
+#include <iostream> //TMP!
 
 class Scanner
 {
@@ -139,7 +141,6 @@ std::vector<flo::Token> flo::tokenise(const std::string code, CompileErrorListen
 		// Semicolons & line-breaks end statements.
 		case '\n':
 		case ';':
-
 			// Only ever need one in sequence.
 			if(!tkns.backEquals(Token::Type::EndStmt))
 			{
@@ -147,11 +148,11 @@ std::vector<flo::Token> flo::tokenise(const std::string code, CompileErrorListen
 			}
 			break;
 
+		// Simple operators
 		case '+': tkns.append(Token::Type::Plus, "+"); break;
 		case '-': tkns.append(Token::Type::Minus, "-"); break;
 		case '*': tkns.append(Token::Type::Star, "*"); break;
 		case '|': tkns.append(Token::Type::Pipe, "|"); break;
-
 
 		case '/':
 			// Line comment
@@ -270,6 +271,47 @@ std::vector<flo::Token> flo::tokenise(const std::string code, CompileErrorListen
 				break;
 			}
 
+			// Identifier
+			if(isalpha(ch))
+			{
+				const int start = s.index();
+				std::stringstream ss;
+				ss << ch;
+				while(!s.isEnd())
+				{
+					const char next = s.peek();
+
+					if(isalpha(next)
+					   || isdigit(next)
+					   || next == '_')
+					{
+						ss << s.advance();
+					}
+					else
+					{
+						break;
+					}
+				}
+
+				std::string id = ss.str();
+
+				// Keyword?
+				if(Keyword::isKeyword(id))
+				{
+					std::cout << "KEYWORD\n";
+					switch(Keyword::asKeyword(id))
+					{
+					case Keyword::Out:
+						tkns.append(Token::Type::Out, id, start);
+						break;
+					}
+					break;
+				}
+
+				// Identifier
+				tkns.append(Token::Type::Identifier, id, start);
+				break;
+			}
 
 			// Invalid token
 			TOKEN_ERROR(CompileError::Type::InvalidToken, std::string(1, ch));

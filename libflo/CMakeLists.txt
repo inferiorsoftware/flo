@@ -13,6 +13,7 @@ set(SOURCE_CORE
 set(INCLUDE_DEV
     include/flo/dev/source.h
     include/flo/dev/token.h
+    include/flo/dev/keyword.h
     include/flo/dev/tokeniser.h
     include/flo/dev/ast.h
     include/flo/dev/parser.h
@@ -24,6 +25,7 @@ set(INCLUDE_DEV
 set(SOURCE_DEV
     source/source.cpp
     source/token.cpp
+    source/keyword.cpp
     source/tokeniser.cpp
     source/ast.cpp
     source/parser.cpp

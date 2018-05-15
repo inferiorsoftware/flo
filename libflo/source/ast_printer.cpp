@@ -21,7 +21,7 @@ void flo::dbg::AstPrinter::beginBranch(std::string str, std::string bullet)
 
 void flo::dbg::AstPrinter::beginStmt(std::string name)
 {
-	beginBranch(name, "■");
+	beginBranch("{" +name + "}", "•");
 }
 
 void flo::dbg::AstPrinter::beginExpr(std::string name)

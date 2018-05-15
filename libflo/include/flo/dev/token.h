@@ -11,6 +11,7 @@ struct Token
 {
 	enum class Type
 	{
+		Out,			/**< out statement. */
 		EndStmt,		/**< End of statement: semicolon or line-break. */
 
 		Plus,			/**< + */
@@ -21,7 +22,7 @@ struct Token
 
 		String,			/**< "..." */
 		Number,			/**< x[.x] */
-
+		Identifier,		/**< Identifier */
 		Error			/**< Not a valid token. */
 	};
 

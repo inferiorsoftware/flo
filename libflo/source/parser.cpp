@@ -1,5 +1,7 @@
 #include "flo/dev/parser.h"
 
+#include <iostream> //TMP!
+
 namespace flo
 {
 
@@ -27,6 +29,7 @@ public:
 	bool peek(Token::Type type) { return tokens[i].type == type; }
 	bool isEnd() { return i >= tokens.size(); }
 	Token previous() { return tokens[i-1]; }
+	void advance() { ++i; }
 };
 
 class Parser
@@ -53,6 +56,11 @@ private:
 
 	StmtPtr statement()
 	{
+		if(scn.match(Token::Type::Out))
+		{
+			return flo::OutStmt::create(addition());
+		}
+
 		return flo::ExprStmt::create(addition());
 	}
 
@@ -111,7 +119,13 @@ private:
 		{
 			err->onCompileError(CompileError{CompileError::Type::ParseFailure, failed});
 		}
+		scn.advance();
 		return ErrorExpr::create(failed);
+	}
+
+	void ln(std::string s)
+	{
+		std::cout << s << std::endl;
 	}
 };
 
