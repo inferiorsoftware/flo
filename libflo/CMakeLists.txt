@@ -37,6 +37,7 @@ set(INCLUDE_DEV
     include/flo/dev/parser.h
     include/flo/dev/bytecode_generator.h
 
+    include/flo/dev/compiler.h
     include/flo/dev/compile_error.h
 
     include/flo/dev/ast_printer.h
@@ -52,6 +53,7 @@ set(SOURCE_DEV
     source/parser.cpp
     source/bytecode_generator.cpp
 
+    source/compiler.cpp
     source/compile_error.cpp
 
     source/ast_printer.cpp
@@ -63,6 +65,12 @@ add_library(${PROJECT_NAME}
     ${INCLUDE_CORE} ${SOURCE_CORE}
     ${INCLUDE_DEV} ${SOURCE_DEV}
     )
-
-
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+add_executable(flo
+    main.cpp
+    )
+target_link_libraries(flo ${PROJECT_NAME})
+
+
+

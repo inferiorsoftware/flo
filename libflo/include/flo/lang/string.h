@@ -15,6 +15,7 @@ class String : public Value
 
 public:
 	void toString(std::stringstream& ss) const override;
+	static ValuePtr create(std::string str);
 };
 
 }

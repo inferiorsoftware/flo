@@ -16,7 +16,7 @@ class ChunkFactory
 public:
 	ChunkFactory& op(const Opcode o);
 	ChunkFactory& constant(ValuePtr value);
-	Chunk* end();
+	Chunk end();
 };
 
 }

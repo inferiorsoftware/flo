@@ -14,6 +14,8 @@ struct CompileError
 	{
 		InvalidToken,
 		UnterminatedToken,
+
+		ExpectExpression,
 		ParseFailure
 	};
 

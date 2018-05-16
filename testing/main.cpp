@@ -52,39 +52,50 @@ public:
 	}
 };
 
+#include "flo/dev/compiler.h"
+
 
 int main()
 {
+
+
 	flo::Source src = flo::Source("tmp", "out 1 + 1 * 10");
 
-	ErrorPrinter erp;
-
-
-	std::vector<flo::Token> tokens = flo::tokenise(src.code, &erp);
-	for(flo::Token tkn : tokens)
+	std::optional<flo::Chunk> ch = flo::compile(src);
+	if(ch.has_value())
 	{
-		std::cout << std::setw(7) << tkn.getName() << " | " << tkn.lexeme << std::endl;
+		flo::Runtime rt;
+		rt.run(ch.value());
 	}
 
-	erp.print(src);
-	std::cout << std::endl;
-
-	std::vector<flo::StmtPtr> tree = flo::parse(tokens, &erp);
-
-	flo::dbg::AstPrinter astpr;
-
-	for(flo::StmtPtr stmt : tree)
-	{
-		std::cout << astpr.print(*stmt) << std::endl;
-	}
-
-	flo::Chunk* c = flo::generate(tree);
+//	ErrorPrinter erp;
 
 
-	flo::Runtime rt;
-	rt.run(*c);
+//	std::vector<flo::Token> tokens = flo::tokenise(src.code, &erp);
+//	for(flo::Token tkn : tokens)
+//	{
+//		std::cout << std::setw(7) << tkn.getName() << " | " << tkn.lexeme << std::endl;
+//	}
 
-	delete c;
+//	erp.print(src);
+//	std::cout << std::endl;
+
+//	std::vector<flo::StmtPtr> tree = flo::parse(tokens, &erp);
+
+//	flo::dbg::AstPrinter astpr;
+
+//	for(flo::StmtPtr stmt : tree)
+//	{
+//		std::cout << astpr.print(*stmt) << std::endl;
+//	}
+
+//	flo::Chunk* c = flo::generate(tree);
+
+
+//	flo::Runtime rt;
+//	rt.run(*c);
+
+//	delete c;
 
     return 0;
 }

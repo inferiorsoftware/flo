@@ -8,6 +8,6 @@
 namespace flo
 {
 
-Chunk* generate(std::vector<StmtPtr> statements);
+Chunk generate(std::vector<StmtPtr> statements);
 
 }

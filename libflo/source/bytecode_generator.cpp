@@ -1,7 +1,9 @@
 #include "flo/dev/bytecode_generator.h"
 #include "flo/dev/chunk_factory.h"
-#include <string>
 #include "flo/lang/number.h"
+#include "flo/lang/string.h"
+
+#include <string>
 
 using namespace flo;
 
@@ -45,9 +47,18 @@ public:
 
 	void visit(LiteralExpr& expr) override
 	{
-		if(expr.token.type == Token::Type::Number)
+		switch(expr.token.type)
 		{
+		case Token::Type::Number:
 			f.constant(Number::create(std::stod(expr.token.lexeme)));
+			break;
+
+		case Token::Type::String:
+			f.constant(String::create(expr.token.lexeme));
+
+		default:
+			//err
+			break;
 		}
 	}
 
@@ -57,14 +68,13 @@ public:
 					"Attempted to generate bytecode from broken syntax tree.");
 	}
 
-
-	Chunk* end()
+	Chunk end()
 	{
 		return f.end();
 	}
 };
 
-flo::Chunk* flo::generate(std::vector<flo::StmtPtr> tree)
+flo::Chunk flo::generate(std::vector<flo::StmtPtr> tree)
 {
 	BytecodeGenerator g;
 

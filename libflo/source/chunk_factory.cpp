@@ -29,9 +29,10 @@ flo::util::ChunkFactory&flo::util::ChunkFactory::constant(flo::ValuePtr value)
 	return *this;
 }
 
-flo::Chunk* flo::util::ChunkFactory::end()
+
+flo::Chunk flo::util::ChunkFactory::end()
 {
 	bytes.push_back((uint8_t) Opcode::End);
 
-	return new Chunk(bytes, constants);
+	return Chunk(bytes, constants);
 }

@@ -6,6 +6,11 @@
 namespace flo
 {
 
+struct ParseException : public std::exception
+{
+	CompileError error;
+	ParseException(CompileError err) : error(err) {}
+};
 
 class TokenScanner
 {
@@ -30,7 +35,12 @@ public:
 	bool peek(Token::Type type) { return !isEnd() && tokens[i].type == type; }
 	bool isEnd() { return i >= tokens.size(); }
 	Token previous() { return tokens[i-1]; }
-	void advance() { ++i; }
+	Token advance() { return tokens[i++]; }
+	Token next() { return tokens[i]; }
+
+	int index() { return i; }
+	int size() { return tokens.size(); }
+	bool isEmpty() { return tokens.empty(); }
 };
 
 class Parser
@@ -45,9 +55,19 @@ public:
 	{
 		std::vector<StmtPtr> statements;
 
+		if(scn.isEmpty()) { return statements; }
+
 		while(!scn.isEnd())
 		{
-			statements.push_back(statement());
+			try
+			{
+				statements.push_back(statement());
+			}
+			catch(ParseException e)
+			{
+				if(err) { err->onCompileError(e.error); }
+				synchronise();
+			}
 		}
 
 		return statements;
@@ -55,14 +75,40 @@ public:
 
 private:
 
+	void synchronise()
+	{
+		scn.advance();
+
+		while(!scn.isEnd())
+		{
+			if(scn.previous().type == Token::Type::EndStmt) return;
+
+			scn.advance();
+		}
+	}
+
+	//TMP!?
+	void ensurePrevious(CompileError::Type err)
+	{
+		if(scn.index() == 0)
+		{
+			throw ParseException(CompileError{err, scn.next()});
+		}
+	}
+
 	StmtPtr statement()
 	{
 		if(scn.match(Token::Type::Out))
 		{
-			return flo::OutStmt::create(addition());
+			return flo::OutStmt::create(expression());
 		}
 
-		return flo::ExprStmt::create(addition());
+		return flo::ExprStmt::create(expression());
+	}
+
+	ExprPtr expression()
+	{
+		return addition();
 	}
 
 	ExprPtr addition()
@@ -72,6 +118,8 @@ private:
 		while(scn.match(Token::Type::Minus)
 			  || scn.match(Token::Type::Plus))
 		{
+			ensurePrevious(CompileError::Type::ExpectExpression);
+
 			Token op = scn.previous();
 			ExprPtr right = multiplication();
 			expr = BinaryExpr::create(expr, op, right);
@@ -87,6 +135,8 @@ private:
 		while(scn.match(Token::Type::Stroke)
 			  || scn.match(Token::Type::Star))
 		{
+			ensurePrevious(CompileError::Type::ExpectExpression);
+
 			Token op = scn.previous();
 			ExprPtr right = unary();
 			expr = BinaryExpr::create(expr, op, right);
@@ -99,6 +149,8 @@ private:
 	{
 		if(scn.match(Token::Type::Minus))
 		{
+			ensurePrevious(CompileError::Type::ExpectExpression);
+
 			Token op = scn.previous();
 			ExprPtr right = unary();
 			return UnaryExpr::create(op, right);
@@ -115,7 +167,7 @@ private:
 			return LiteralExpr::create(scn.previous());
 		}
 
-		Token failed = scn.previous();
+		Token failed = scn.advance();
 		if(err)
 		{
 			err->onCompileError(CompileError{CompileError::Type::ParseFailure, failed});
