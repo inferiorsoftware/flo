@@ -14,6 +14,9 @@ struct Token
 		Out,			/**< out statement. */
 		EndStmt,		/**< End of statement: semicolon or line-break. */
 
+		OpenParen,		/**< ( */
+		CloseParen,		/**< ) */
+
 		Plus,			/**< + */
 		Minus,			/**< - */
 		Star,			/**< * */

@@ -32,9 +32,15 @@ private:
 	void visit(BinaryExpr& expr) override;
 	void visit(UnaryExpr& expr) override;
 	void visit(LiteralExpr& expr) override;
+	void visit(GroupExpr& expr) override;
 	void visit(ErrorExpr& expr) override;
 
+
+	// AstVisitor interface
+public:
+
 };
+
 
 }
 }

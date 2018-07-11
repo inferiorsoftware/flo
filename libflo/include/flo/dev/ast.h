@@ -16,6 +16,7 @@ struct AstNode
 	friend struct BinaryExpr;
 	friend struct UnaryExpr;
 	friend struct LiteralExpr;
+	friend struct GroupExpr;
 	friend struct ErrorExpr;
 	
 	virtual ~AstNode() {}
@@ -108,6 +109,18 @@ struct LiteralExpr : public Expr
 };
 
 
+/** A parenthesised expression. */
+struct GroupExpr : public Expr
+{
+	const ExprPtr expression;
+	
+	AstNode* getParent() final;
+	void accept(AstVisitor& visitor) final;
+	static ExprPtr create(ExprPtr expression);
+	GroupExpr(ExprPtr expression);
+};
+
+
 /** A parse error. */
 struct ErrorExpr : public Expr
 {
@@ -127,6 +140,7 @@ public:
 	virtual void visit(BinaryExpr& expr);
 	virtual void visit(UnaryExpr& expr);
 	virtual void visit(LiteralExpr& expr);
+	virtual void visit(GroupExpr& expr);
 	virtual void visit(ErrorExpr& expr);
 };
 

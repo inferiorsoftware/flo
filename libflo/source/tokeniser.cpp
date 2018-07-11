@@ -148,6 +148,9 @@ std::vector<flo::Token> flo::tokenise(const std::string code, CompileErrorListen
 			}
 			break;
 
+		case '(': tkns.append(Token::Type::OpenParen, "("); break;
+		case ')': tkns.append(Token::Type::CloseParen, ")"); break;
+
 		// Simple operators
 		case '+': tkns.append(Token::Type::Plus, "+"); break;
 		case '-': tkns.append(Token::Type::Minus, "-"); break;

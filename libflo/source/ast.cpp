@@ -67,6 +67,19 @@ ExprPtr LiteralExpr::create(Token token)
 	return std::shared_ptr<LiteralExpr>(n);
 }
 
+GroupExpr::GroupExpr(ExprPtr expression)
+	: expression(expression) {}
+
+AstNode* GroupExpr::getParent() { return parent; }
+
+void GroupExpr::accept(AstVisitor& visitor) { visitor.visit(*this); }
+ExprPtr GroupExpr::create(ExprPtr expression)
+{
+	GroupExpr* n = new GroupExpr(expression);
+	expression->parent = n;
+	return std::shared_ptr<GroupExpr>(n);
+}
+
 ErrorExpr::ErrorExpr(Token token)
 	: token(token) {}
 
@@ -98,6 +111,10 @@ void flo::AstVisitor::visit(UnaryExpr& expr)
 }
 void flo::AstVisitor::visit(LiteralExpr& expr)
 {
+}
+void flo::AstVisitor::visit(GroupExpr& expr)
+{
+	expr.expression->accept(*this);
 }
 void flo::AstVisitor::visit(ErrorExpr& expr)
 {

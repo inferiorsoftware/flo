@@ -5,9 +5,9 @@
 
 void flo::dbg::AstPrinter::out(std::string str, std::string bullet)
 {
-	for(int i=0; i<indent.size(); ++i)
+	for(int i=0; i<depth; ++i)
 	{
-		ss << indent[i];
+		ss << "  ";
 	}
 
 	ss << bullet << str << std::endl;
@@ -16,7 +16,7 @@ void flo::dbg::AstPrinter::out(std::string str, std::string bullet)
 void flo::dbg::AstPrinter::beginBranch(std::string str, std::string bullet)
 {
 	out(str, bullet);
-	indent.push_back("  ");
+	depth++;
 }
 
 void flo::dbg::AstPrinter::beginStmt(std::string name)
@@ -74,6 +74,13 @@ void flo::dbg::AstPrinter::visit(flo::UnaryExpr& expr)
 void flo::dbg::AstPrinter::visit(flo::LiteralExpr& expr)
 {
 	out("" + expr.token.lexeme + "");
+}
+
+void flo::dbg::AstPrinter::visit(flo::GroupExpr& expr)
+{
+	beginExpr("()");
+	expr.expression->accept(*this);
+	endBranch();
 }
 
 void flo::dbg::AstPrinter::visit(flo::ErrorExpr& expr)

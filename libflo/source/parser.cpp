@@ -23,7 +23,7 @@ public:
 
 	bool match(Token::Type type)
 	{
-		if(peek(type))
+		if(check(type))
 		{
 		   ++i;
 		   return true;
@@ -32,7 +32,7 @@ public:
 		return false;
 	}
 
-	bool peek(Token::Type type) { return !isEnd() && tokens[i].type == type; }
+	bool check(Token::Type type) { return !isEnd() && tokens[i].type == type; }
 	bool isEnd() { return i >= tokens.size(); }
 	Token previous() { return tokens[i-1]; }
 	Token advance() { return tokens[i++]; }
@@ -77,12 +77,12 @@ private:
 
 	void synchronise()
 	{
-		scn.advance();
+		if(scn.isEnd()) return;
 
+		scn.advance();
 		while(!scn.isEnd())
 		{
 			if(scn.previous().type == Token::Type::EndStmt) return;
-
 			scn.advance();
 		}
 	}
@@ -161,12 +161,28 @@ private:
 
 	ExprPtr primary()
 	{
+		// Literal value
 		if(scn.match(Token::Type::Number)
 		   || scn.match(Token::Type::String))
 		{
 			return LiteralExpr::create(scn.previous());
 		}
 
+		// Group
+		if(scn.match(Token::Type::OpenParen))
+		{
+			Token start = scn.previous();
+
+			ExprPtr expr = expression();
+			if(!scn.match(Token::Type::CloseParen))
+			{
+				throw ParseException(CompileError{CompileError::Type::UnterminatedToken, start});
+			}
+
+			return GroupExpr::create(expr);
+		}
+
+		// Failure D:
 		Token failed = scn.advance();
 		if(err)
 		{

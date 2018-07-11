@@ -7,6 +7,9 @@ std::string flo::Token::getName()
 	case Type::Out:			return "OutStmt";
 	case Type::EndStmt:		return "EndStmt";
 
+	case Type::OpenParen:	return "OpParn";
+	case Type::CloseParen:	return "ClParen";
+
 	case Type::Plus:		return "Plus";
 	case Type::Minus:		return "Minus";
 	case Type::Star:		return "Start";

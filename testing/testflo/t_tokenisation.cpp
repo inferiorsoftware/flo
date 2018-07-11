@@ -121,4 +121,17 @@ TEST(TokenisationTest, DecimalTest)
 			<< "Decimal produces number; got " +tkns[0].getName();
 }
 
+TEST(TokenisationTest, ParenthesisTest)
+{
+	std::vector<flo::Token> tkns = flo::tokenise("(1)");
+
+	ASSERT_EQ(tkns.size(), 3)
+			<< "One token per paren.";
+
+	EXPECT_EQ(tkns[0].type, Token::Type::OpenParen)
+			<< "Open paranthesis.";
+
+	EXPECT_EQ(tkns[2].type, Token::Type::CloseParen)
+			<< "Close parenthesis.";
+}
 

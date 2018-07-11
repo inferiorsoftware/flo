@@ -67,6 +67,12 @@ nodes = [
              [Field("Token", "token", "Token defining the literal.")],
              "A literal value defined in source code."
              ),
+
+    ClassDef(expr, "GroupExpr",
+             [Field("ExprPtr", "expression", "Inner expression.")],
+             "A parenthesised expression."
+             ),
+
     ClassDef(expr, "ErrorExpr",
              [Field("Token", "token", "The unparsable token.")],
              "A parse error."
